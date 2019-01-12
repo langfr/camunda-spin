@@ -79,13 +79,14 @@ public class JacksonJsonDataFormat implements DataFormat<SpinJsonNode> {
     if (version.compareTo(new BigDecimal("1.8")) >= 0) {
       try {
         this.objectMapper.registerModule((com.fasterxml.jackson.databind.Module) Class.forName("com.fasterxml.jackson.datatype.jsr310.JavaTimeModule").newInstance());
-        // this.objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        this.objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        System.out.println("Registered and configured the JavaTimeModule succesfully.");
       } catch (ClassNotFoundException e) {
-        // ignore
+        e.printStackTrace();
       } catch (IllegalAccessException e) {
-        // ignore
+        e.printStackTrace();
       } catch (InstantiationException e) {
-        // ignore
+        e.printStackTrace();
       }
     }
   }
