@@ -18,7 +18,6 @@ package org.camunda.spin.impl.json.jackson.format;
 
 import static org.camunda.commons.utils.EnsureUtil.ensureNotNull;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +39,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.Configuration.ConfigurationBuilder;
 
@@ -75,20 +75,9 @@ public class JacksonJsonDataFormat implements DataFormat<SpinJsonNode> {
 
   public JacksonJsonDataFormat(String name) {
     this(name, new ObjectMapper());
-    BigDecimal version = new BigDecimal(System.getProperty("java.specification.version"));
-    if (version.compareTo(new BigDecimal("1.8")) >= 0) {
-      try {
-        this.objectMapper.registerModule((com.fasterxml.jackson.databind.Module) Class.forName("com.fasterxml.jackson.datatype.jsr310.JavaTimeModule").newInstance());
-        this.objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        System.out.println("Registered and configured the JavaTimeModule succesfully.");
-      } catch (ClassNotFoundException e) {
-        e.printStackTrace();
-      } catch (IllegalAccessException e) {
-        e.printStackTrace();
-      } catch (InstantiationException e) {
-        e.printStackTrace();
-      }
-    }
+    this.objectMapper.registerModule(new JavaTimeModule());
+    this.objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+    System.out.println("Registered and configured the JavaTimeModule succesfully.");
   }
 
   public JacksonJsonDataFormat(String name, ObjectMapper objectMapper) {
